@@ -35,23 +35,21 @@ export default function Home() {
             <Link href="/dashboard" className="group">
               <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105">
                 <div className="text-4xl mb-4">📚</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Dashboard</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">My Dashboard</h3>
                 <p className="text-gray-600">View your courses and progress</p>
               </div>
             </Link>
 
-            <Link href="/test-api" className="group">
-              <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-                <div className="text-4xl mb-4">🧪</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Test APIs</h3>
-                <p className="text-gray-600">Test the backend functionality</p>
-              </div>
-            </Link>
+            <div className="bg-white p-8 rounded-xl shadow-lg">
+              <div className="text-4xl mb-4">🎯</div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">My Courses</h3>
+              <p className="text-gray-600">Browse available courses (Coming in Day 3)</p>
+            </div>
 
             <div className="bg-white p-8 rounded-xl shadow-lg">
-              <div className="text-4xl mb-4">🔄</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Coming Soon</h3>
-              <p className="text-gray-600">More features in Day 3!</p>
+              <div className="text-4xl mb-4">📊</div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">My Progress</h3>
+              <p className="text-gray-600">Track your learning journey (Coming in Day 3)</p>
             </div>
           </div>
 
