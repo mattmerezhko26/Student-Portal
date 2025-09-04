@@ -1,30 +1,31 @@
 import mongoose from 'mongoose';
 
 const CourseSchema = new mongoose.Schema({
-  title: {
-    type: String,
-    required: true,
-    trim: true,
+  title: { 
+    type: String, 
+    required: true 
   },
-  description: {
-    type: String,
-    required: true,
+  description: { 
+    type: String, 
+    required: true 
   },
-  modules: [{
-    type: String,
-    required: true,
+  modules: [{ 
+    type: String 
   }],
-  createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
+  createdAt: { 
+    type: Date, 
+    default: Date.now 
   },
-  isActive: {
-    type: Boolean,
-    default: true,
-  },
-}, {
-  timestamps: true,
+  updatedAt: { 
+    type: Date, 
+    default: Date.now 
+  }
+});
+
+// Update the updatedAt field before saving
+CourseSchema.pre('save', function(next) {
+  this.updatedAt = Date.now();
+  next();
 });
 
 export default mongoose.models.Course || mongoose.model('Course', CourseSchema);

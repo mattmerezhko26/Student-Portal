@@ -120,15 +120,7 @@ export default function SignIn() {
           </div>
         </div>
 
-        {/* Test Credentials Helper */}
-        <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-md">
-          <h3 className="text-sm font-medium text-yellow-800">🧪 Testing Day 1:</h3>
-          <p className="text-xs text-yellow-700 mt-1">
-            1. First create an account with the Sign Up form<br/>
-            2. Then come back here and login with those credentials<br/>
-            3. You should be redirected to a dashboard (we'll build this on Day 3)
-          </p>
-        </div>
+       
       </div>
     </div>
   );
