@@ -31,7 +31,38 @@ export async function GET(request) {
     );
   }
 }
-
+export async function DELETE(request) {
+  try {
+    await dbConnect();
+    
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    
+    if (!id) {
+      return NextResponse.json(
+        { error: 'Enrollment ID is required' },
+        { status: 400 }
+      );
+    }
+    
+    const enrollment = await Enrollment.findByIdAndDelete(id);
+    
+    if (!enrollment) {
+      return NextResponse.json(
+        { error: 'Enrollment not found' },
+        { status: 404 }
+      );
+    }
+    
+    return NextResponse.json({ message: 'Enrollment deleted successfully' });
+  } catch (error) {
+    console.error('Delete enrollment error:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete enrollment' },
+      { status: 500 }
+    );
+  }
+}
 // POST /api/enrollments - Create a new enrollment
 export async function POST(request) {
   try {

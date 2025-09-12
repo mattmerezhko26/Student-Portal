@@ -1,40 +1,43 @@
-import NextAuth from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
+import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import dbConnect from '@/lib/mongodb';
 import User from '@/models/User';
 
-const handler = NextAuth({
-  providers: [
-    CredentialsProvider({
-      name: 'credentials',
-      credentials: {
-        email: { label: 'Email', type: 'email' },
-        password: { label: 'Password', type: 'password' }
-      },
-      async authorize(credentials) {
-        await dbConnect();
-        
-        const user = await User.findOne({ email: credentials.email });
-        
-        if (user && bcrypt.compareSync(credentials.password, user.passwordHash)) {
-          return {
-            id: user._id,
-            email: user.email,
-            name: user.name,
-            role: user.role,
-          };
-        }
-        return null;
-      }
-    })
-  ],
-  session: {
-    strategy: 'jwt',
-  },
-  pages: {
-    signIn: '/auth/signin',
-  },
-});
-
-export { handler as GET, handler as POST };
+export async function POST(request) {
+  try {
+    console.log('Signup API called');
+    const { name, email, password } = await request.json();
+    console.log('Request data:', { name, email, password: '***' });
+    
+    await dbConnect();
+    console.log('Database connected');
+    
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      console.log('User already exists');
+      return NextResponse.json({ error: 'User already exists' }, { status: 400 });
+    }
+    
+    // Hash password
+    const passwordHash = bcrypt.hashSync(password, 12);
+    console.log('Password hashed');
+    
+    // Create user
+    const user = await User.create({
+      name,
+      email,
+      passwordHash,
+      role: 'student',
+    });
+    console.log('User created:', user._id);
+    
+    return NextResponse.json({ message: 'User created successfully' }, { status: 201 });
+  } catch (error) {
+    console.error('Signup error:', error);
+    return NextResponse.json({ 
+      error: 'Something went wrong', 
+      details: error.message 
+    }, { status: 500 });
+  }
+}

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useSession, signOut } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -35,84 +35,27 @@ export default function Home() {
             <Link href="/dashboard" className="group">
               <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105">
                 <div className="text-4xl mb-4">📚</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Dashboard</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">My Dashboard</h3>
                 <p className="text-gray-600">View your courses and progress</p>
               </div>
             </Link>
 
-            <Link href="/test-api" className="group">
+            <Link href="/admin" className="group">
               <div className="bg-white p-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group-hover:scale-105">
-                <div className="text-4xl mb-4">🧪</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">Test APIs</h3>
-                <p className="text-gray-600">Test the backend functionality</p>
+                <div className="text-4xl mb-4">⚙️</div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">Admin Panel</h3>
+                <p className="text-gray-600">Manage courses and students</p>
               </div>
             </Link>
 
             <div className="bg-white p-8 rounded-xl shadow-lg">
-              <div className="text-4xl mb-4">🔄</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Coming Soon</h3>
-              <p className="text-gray-600">More features in Day 3!</p>
+              <div className="text-4xl mb-4">📊</div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">My Progress</h3>
+              <p className="text-gray-600">Track your learning journey</p>
             </div>
           </div>
 
-          <div className="mt-16 bg-white rounded-xl shadow-lg p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-              🎯 Development Progress
-            </h2>
-            <div className="grid gap-6 md:grid-cols-2">
-              <div>
-                <h3 className="text-lg font-semibold text-green-600 mb-3">✅ Completed</h3>
-                <ul className="space-y-2 text-gray-700">
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-500">•</span>
-                    User authentication system
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-500">•</span>
-                    Database models (User, Course, Enrollment, Resource)
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-500">•</span>
-                    API routes for CRUD operations
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-500">•</span>
-                    API testing interface
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-green-500">•</span>
-                    Basic dashboard setup
-                  </li>
-                </ul>
-              </div>
-              
-              <div>
-                <h3 className="text-lg font-semibold text-blue-600 mb-3">🔄 Next Steps</h3>
-                <ul className="space-y-2 text-gray-700">
-                  <li className="flex items-center gap-2">
-                    <span className="text-blue-500">•</span>
-                    Student dashboard with course display
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-blue-500">•</span>
-                    Progress tracking visualization
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-blue-500">•</span>
-                    Course detail pages
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-blue-500">•</span>
-                    Admin dashboard
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <span className="text-blue-500">•</span>
-                    Analytics and charts
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
+          
         </div>
       </div>
     );
@@ -156,15 +99,7 @@ export default function Home() {
               </Link>
             </div>
             
-            <div className="mt-6 p-4 bg-gray-50 rounded-md">
-              <h3 className="text-sm font-medium text-gray-800 mb-2">🎯 Current Status:</h3>
-              <ul className="text-xs text-gray-600 space-y-1">
-                <li>✅ Authentication system ready</li>
-                <li>✅ Database models created</li>
-                <li>✅ API endpoints functional</li>
-                <li>✅ Ready for Day 3 development!</li>
-              </ul>
-            </div>
+            
 
             <div className="mt-4 text-center">
               <Link 
@@ -179,9 +114,7 @@ export default function Home() {
       </div>
 
       <div className="mt-8 text-center">
-        <p className="text-sm text-gray-500">
-          Built with Next.js, MongoDB, and NextAuth
-        </p>
+        
       </div>
     </div>
   );

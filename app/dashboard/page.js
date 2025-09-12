@@ -4,12 +4,14 @@ import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import AddCourseModal from '@/components/AddCourseModal';
 
 export default function Dashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showAddCourseModal, setShowAddCourseModal] = useState(false);
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -18,7 +20,6 @@ export default function Dashboard() {
       return;
     }
 
-    // Fetch dashboard data
     fetchDashboardData();
   }, [session, status, router]);
 
@@ -27,7 +28,7 @@ export default function Dashboard() {
       const response = await fetch('/api/student/dashboard');
       if (response.ok) {
         const data = await response.json();
-        console.log('Dashboard data:', data); // Debug log
+        console.log('Dashboard data:', data);
         setDashboardData(data);
       } else {
         console.error('Failed to fetch dashboard data');
@@ -38,6 +39,53 @@ export default function Dashboard() {
       setLoading(false);
     }
   };
+
+  const clearAllData = async () => {
+  if (confirm('This will delete all courses and enrollments. Continue?')) {
+    try {
+      // Get all courses first
+      const coursesResponse = await fetch('/api/courses');
+      if (coursesResponse.ok) {
+        const courses = await coursesResponse.json();
+        console.log('Found courses to delete:', courses.length);
+        
+        // Delete each course
+        for (const course of courses) {
+          const deleteResponse = await fetch(`/api/courses?id=${course._id}`, { 
+            method: 'DELETE' 
+          });
+          console.log(`Delete course ${course._id}:`, deleteResponse.status);
+        }
+      }
+
+      // Get all enrollments
+      const enrollmentsResponse = await fetch('/api/enrollments');
+      if (enrollmentsResponse.ok) {
+        const enrollments = await enrollmentsResponse.json();
+        console.log('Found enrollments to delete:', enrollments.length);
+        
+        // Delete each enrollment (you might need to implement this)
+        for (const enrollment of enrollments) {
+          try {
+            await fetch(`/api/enrollments?id=${enrollment._id}`, { 
+              method: 'DELETE' 
+            });
+          } catch (e) {
+            console.log('Enrollment delete not implemented yet');
+          }
+        }
+      }
+
+      // Refresh the dashboard
+      await fetchDashboardData();
+      alert('Data cleared successfully!');
+      
+    } catch (error) {
+      console.error('Error clearing data:', error);
+      alert('Error clearing data. Check console for details.');
+    }
+  }
+};
 
   if (status === 'loading' || loading) {
     return (
@@ -139,12 +187,19 @@ export default function Dashboard() {
 
         {/* My Courses Section */}
         <div className="mb-8">
-          <h3 className="text-2xl font-bold text-gray-900 mb-6">My Courses</h3>
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="text-2xl font-bold text-gray-900">My Courses</h3>
+            <button
+              onClick={() => setShowAddCourseModal(true)}
+              className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors font-medium"
+            >
+              ➕ Add Course
+            </button>
+          </div>
           
           {dashboardData && dashboardData.enrollments && dashboardData.enrollments.length > 0 ? (
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {dashboardData.enrollments.map((enrollment) => {
-                // Safety checks
                 const courseTitle = enrollment.courseId?.title || 'Course Title';
                 const courseDescription = enrollment.courseId?.description || 'Course description not available';
                 const modules = enrollment.courseId?.modules || [];
@@ -169,7 +224,7 @@ export default function Dashboard() {
 
                     {/* Course Body */}
                     <div className="p-6">
-                      <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                      <p className="text-gray-600 text-sm mb-4">
                         {courseDescription}
                       </p>
 
@@ -184,54 +239,15 @@ export default function Dashboard() {
                         <ProgressBar progress={progress} />
                       </div>
 
-                      {/* Modules Progress */}
-                      <div className="mb-4">
-                        <p className="text-sm text-gray-600 mb-2">
-                          {completedModules.length} of {modules.length} modules completed
-                        </p>
-                        <div className="space-y-1">
-                          {modules.slice(0, 3).map((module, index) => {
-                            const isCompleted = completedModules.some(
-                              cm => cm.moduleIndex === index
-                            );
-                            return (
-                              <div key={index} className="flex items-center gap-2">
-                                <div className={`w-2 h-2 rounded-full ${
-                                  isCompleted ? 'bg-green-500' : 'bg-gray-300'
-                                }`}></div>
-                                <span className={`text-xs ${
-                                  isCompleted ? 'text-green-700' : 'text-gray-500'
-                                }`}>
-                                  {module || `Module ${index + 1}`}
-                                </span>
-                              </div>
-                            );
-                          })}
-                          {modules.length > 3 && (
-                            <p className="text-xs text-gray-400">
-                              +{modules.length - 3} more modules
-                            </p>
-                          )}
-                        </div>
-                      </div>
-
                       {/* Action Buttons */}
                       <div className="flex gap-2">
                         {courseId && (
-                          <>
-                            <Link 
-                              href={`/courses/${courseId}`}
-                              className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium text-center"
-                            >
-                              Continue Learning
-                            </Link>
-                            <Link
-                              href={`/courses/${courseId}`}
-                              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors text-sm"
-                            >
-                              📄
-                            </Link>
-                          </>
+                          <Link 
+                            href={`/courses/${courseId}`}
+                            className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium text-center"
+                          >
+                            Continue Learning
+                          </Link>
                         )}
                       </div>
                     </div>
@@ -241,12 +257,9 @@ export default function Dashboard() {
                       <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${
                         enrollment.status === 'completed' 
                           ? 'bg-green-100 text-green-800' 
-                          : enrollment.status === 'active'
-                          ? 'bg-blue-100 text-blue-800'
-                          : 'bg-yellow-100 text-yellow-800'
+                          : 'bg-blue-100 text-blue-800'
                       }`}>
-                        {enrollment.status === 'completed' ? '✅ Completed' : 
-                         enrollment.status === 'active' ? '🔄 In Progress' : '⏸️ Paused'}
+                        {enrollment.status === 'completed' ? '✅ Completed' : '🔄 In Progress'}
                       </span>
                     </div>
                   </div>
@@ -257,12 +270,12 @@ export default function Dashboard() {
             <div className="bg-white rounded-xl shadow-lg p-8 text-center">
               <div className="text-4xl mb-4">📚</div>
               <h4 className="text-xl font-semibold text-gray-800 mb-2">No courses yet</h4>
-              <p className="text-gray-600 mb-4">Start your learning journey by enrolling in a course</p>
+              <p className="text-gray-600 mb-4">Add your first course to get started</p>
               <button 
-                onClick={fetchDashboardData}
+                onClick={() => setShowAddCourseModal(true)}
                 className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
               >
-                🔄 Load Sample Courses
+                ➕ Add Your First Course
               </button>
             </div>
           )}
@@ -284,9 +297,22 @@ export default function Dashboard() {
             >
               🔄 Refresh Data
             </button>
+            <button 
+              onClick={clearAllData}
+              className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors"
+            >
+              🗑️ Clear & Reset
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Add Course Modal */}
+      <AddCourseModal
+        isOpen={showAddCourseModal}
+        onClose={() => setShowAddCourseModal(false)}
+        onCourseAdded={fetchDashboardData}
+      />
     </div>
   );
 }
