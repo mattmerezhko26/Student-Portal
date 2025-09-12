@@ -4,7 +4,7 @@ import { useSession, signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-
+import CourseModal from "@/components/CourseModal";
 export default function AdminDashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();

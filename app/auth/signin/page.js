@@ -109,7 +109,7 @@ export default function SignIn() {
           <div className="mt-6">
             <div className="text-center">
               <Link href="/auth/signup" className="text-sm text-blue-600 hover:text-blue-500">
-                Don't have an account? Sign up
+                <p>Don&apos;t have an account? Sign up</p>
               </Link>
             </div>
             <div className="text-center mt-2">
